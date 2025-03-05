@@ -1,3 +1,4 @@
+version: '3.8'
 services:
     flowise:
         image: flowiseai/flowise
@@ -45,7 +46,6 @@ services:
             - REDIS_CERT=${REDIS_CERT}
             - REDIS_KEY=${REDIS_KEY}
             - REDIS_CA=${REDIS_CA}
-
         ports:
             - '${PORT}:${PORT}'
         volumes:
@@ -55,13 +55,25 @@ services:
             - flowise-network
 
     qdrant:
-        image: qdrant/qdrant
-        container_name: qdrant
+        image: qdrant/qdrant:latest
         restart: always
-        ports:
+        container_name: qdrant
+        expose:
             - "6333"
+            - "6334"
+            - "6335"
+        configs:
+            - source: qdrant_config
+              target: /qdrant/config/production.yaml
+        volumes:
+            - ./qdrant_data:/qdrant/storage
         networks:
             - flowise-network
+
+configs:
+    qdrant_config:
+        content: |
+            log_level: INFO
 
 networks:
     flowise-network:
