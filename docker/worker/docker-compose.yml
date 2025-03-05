@@ -52,3 +52,19 @@ services:
         volumes:
             - ~/.flowise:/root/.flowise
         entrypoint: /bin/sh -c "sleep 3; flowise worker"
+
+    qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    restart: always
+    # If you want to access Qdrant externally, keep the line below:
+    ports:
+        - "6333"
+    # If Qdrant is purely internal, you could remove the above line
+    # or keep it to test Qdrant externally on localhost:6333
+    networks:
+        - flowise-network
+
+networks:
+    flowise-network:
+        driver: bridge
